@@ -2,6 +2,7 @@
 import 'source-map-support/register';
 import * as cdk from 'aws-cdk-lib';
 import { IntraStack } from '../lib/intra-stack';
+import 'dotenv/config';
 
 const app = new cdk.App();
 new IntraStack(app, 'IntraStack', {
