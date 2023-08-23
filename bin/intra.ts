@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 import 'source-map-support/register';
 import * as cdk from 'aws-cdk-lib';
-import { IntraStack } from '../lib/intra-stack';
+import { ChatgptClientStack } from '../lib/chatgpt-client-stack';
 import 'dotenv/config';
 
 const app = new cdk.App();
-new IntraStack(app, 'IntraStack', {
+new ChatgptClientStack(app, 'ChatgptClientStack', {
   /* If you don't specify 'env', this stack will be environment-agnostic.
    * Account/Region-dependent features and context lookups will not work,
    * but a single synthesized template can be deployed anywhere. */

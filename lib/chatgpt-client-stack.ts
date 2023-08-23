@@ -6,9 +6,8 @@ import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 import { Construct } from 'constructs';
 // import * as sqs from 'aws-cdk-lib/aws-sqs';
 import * as path from 'path';
-import { Code, LayerVersion } from 'aws-cdk-lib/aws-lambda';
 
-export class IntraStack extends cdk.Stack {
+export class ChatgptClientStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
@@ -32,18 +31,17 @@ export class IntraStack extends cdk.Stack {
     //   description: 'Api Handler Dependencies',
     // });
 
-// add handler to respond to all our api requests
-//     const handler = new Function(this, 'Handler', {
-//       code: Code.fromAsset(path.resolve(__dirname, '../../api/src'), {
-//         exclude: ['node_modules'],
-//       }),
-//       handler: 'dist/api/src/index.handler',
-//       runtime: Runtime.NODEJS_18_X,
-//       layers: [lambdaLayer],
-//     });
+    // add handler to respond to all our api requests
+    //     const handler = new Function(this, 'Handler', {
+    //       code: Code.fromAsset(path.resolve(__dirname, '../../api/src'), {
+    //         exclude: ['node_modules'],
+    //       }),
+    //       handler: 'dist/api/src/index.handler',
+    //       runtime: Runtime.NODEJS_18_X,
+    //       layers: [lambdaLayer],
+    //     });
 
-
-    const lambdaFunction = new NodejsFunction(this, 'IntraLambda', {
+    const lambdaFunction = new NodejsFunction(this, 'chatGptLambda', {
       runtime: lambda.Runtime.NODEJS_18_X,
       entry: path.join(__dirname, '../src/index.ts'),
       handler: 'handler',
@@ -65,5 +63,8 @@ export class IntraStack extends cdk.Stack {
       restApiName: 'chatGptApi',
       apiKeySourceType: ApiKeySourceType.HEADER,
     });
+
+    apiGateway.root.addResource('chat');
+    apiGateway.root.addResource('list');
   }
 }

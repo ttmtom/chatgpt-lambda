@@ -1,4 +1,4 @@
-import { Configuration, OpenAIApi } from 'openai';
+import { ChatCompletionRequestMessage, Configuration, OpenAIApi } from 'openai';
 
 class ChatGptService {
   private readonly configuration: Configuration;
@@ -9,17 +9,19 @@ class ChatGptService {
     });
     this.openai = new OpenAIApi(this.configuration);
   }
-  async chat() {
-    const temp = await this.openai.listModels();
-    console.log(temp.data.data);
 
+  async getList() {
+    const res = await this.openai.listModels();
+    return res.data;
+  }
+  async chat(model: string, messages: ChatCompletionRequestMessage[]) {
     try {
       const chatCompletion = await this.openai.createChatCompletion({
-        model: "gpt-3.5-turbo",
-        messages: [{role: "user", content: "Hello world"}],
+        model,
+        messages,
       });
       console.log(chatCompletion.data.choices);
-      return chatCompletion;
+      return chatCompletion.data.choices;
     } catch (err) {
       console.log(err);
       return ''
