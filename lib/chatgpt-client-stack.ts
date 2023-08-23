@@ -59,12 +59,16 @@ export class ChatgptClientStack extends cdk.Stack {
 
     const apiGateway = new apigateway.LambdaRestApi(this, 'chatGptApigw', {
       handler: lambdaFunction,
-      proxy: true,
+      proxy: false,
       restApiName: 'chatGptApi',
       apiKeySourceType: ApiKeySourceType.HEADER,
     });
 
-    apiGateway.root.addResource('chat');
-    apiGateway.root.addResource('list');
+    const handlerIntegration= new apigateway.LambdaIntegration(lambdaFunction);
+
+    const chat = apiGateway.root.addResource('chat');
+    chat.addMethod('POST', handlerIntegration, {apiKeyRequired: true});
+    const list = apiGateway.root.addResource('list');
+    list.addMethod('GET', handlerIntegration, {apiKeyRequired: true});
   }
 }
