@@ -1,17 +1,17 @@
-import { APIGatewayEvent } from 'aws-lambda';
+import { APIGatewayProxyEvent } from 'aws-lambda';
 import { TChatGptLambdaEvent, TChatGptLambdaInput } from './types/chatgptLambda.type';
 import { chatgptController } from './controllers/chatgpt.controller';
 
 
-const isGatewayEvent = (event: APIGatewayEvent | TChatGptLambdaEvent): event is APIGatewayEvent => {
+const isGatewayEvent = (event: APIGatewayProxyEvent | TChatGptLambdaEvent): event is APIGatewayProxyEvent => {
   return typeof event.body === 'string';
 }
 
-const apiGatewayBodyValidation = (event: any): event is TChatGptLambdaEvent => {
-  return Array.isArray(event.body);
+const apiGatewayBodyValidation = (body: any): body is TChatGptLambdaInput => {
+  return Array.isArray(body.messages);
 }
-const extractEvent = (event: APIGatewayEvent | TChatGptLambdaEvent): {
-  body: TChatGptLambdaInput,
+const extractEvent = (event: APIGatewayProxyEvent | TChatGptLambdaEvent): {
+  body: TChatGptLambdaInput | null,
   resource: string
 } => {
   if (isGatewayEvent(event)) {
@@ -19,16 +19,20 @@ const extractEvent = (event: APIGatewayEvent | TChatGptLambdaEvent): {
     if (!apiGatewayBodyValidation(temp)) {
       throw new Error('invalid body');
     }
-
-    return temp;
+    return {
+      resource: event.resource,
+      body: temp
+    };
   }
   return event;
 }
-export const handler = async (event: APIGatewayEvent | TChatGptLambdaEvent) => {
+export const handler = async (event: APIGatewayProxyEvent | TChatGptLambdaEvent) => {
   // const body = extractEvent(event);
+  console.log('--- event: ' + JSON.stringify(event, null, 2));
   const {body, resource} = extractEvent(event);
   switch (resource) {
     case '/chat': {
+      if (!body) throw new Error('invalid body');
       return await chatgptController.chat(body.model, body.messages);
     }
     case '/list': {

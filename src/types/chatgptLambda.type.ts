@@ -6,6 +6,6 @@ export type TChatGptLambdaInput = {
 }
 
 export type TChatGptLambdaEvent = {
-  body: TChatGptLambdaInput;
+  body: TChatGptLambdaInput | null;
   resource: string;
 }
