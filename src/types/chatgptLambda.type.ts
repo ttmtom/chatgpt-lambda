@@ -1,7 +1,7 @@
 import { ChatCompletionRequestMessage } from 'openai';
 
 export type TChatGptLambdaInput = {
-  mode: string;
+  model: string;
   messages: ChatCompletionRequestMessage[];
 }
 

@@ -29,7 +29,7 @@ export const handler = async (event: APIGatewayEvent | TChatGptLambdaEvent) => {
   const {body, resource} = extractEvent(event);
   switch (resource) {
     case '/chat': {
-      return await chatgptController.chat(body.mode, body.messages);
+      return await chatgptController.chat(body.model, body.messages);
     }
     case '/list': {
       return await chatgptController.list();
