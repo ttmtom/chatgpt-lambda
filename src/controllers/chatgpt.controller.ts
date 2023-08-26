@@ -7,7 +7,7 @@ class ChatgptController {
       const res = await chatGptService.chat(model, messages);
       return {
         statusCode: 200,
-        body: 'message',
+        body: JSON.stringify(res),
       }
     } catch (err) {
       return {
